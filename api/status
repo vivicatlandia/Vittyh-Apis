@@ -16,7 +16,7 @@ export default async function handler(req) {
   ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
 
   // Avatar da Serena
-  const avatar = await loadImage("https://vittyh-apis.vercel.app/serena-avatar.png"); // você vai hospedar a imagem
+  const avatar = await loadImage("https://vittyh-apis.vercel.app/SerenaAwakeST.png"); // você vai hospedar a imagem
 
   // Avatar redondo
   ctx.save();
