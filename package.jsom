@@ -1,0 +1,12 @@
+{
+  "name": "serena-api",
+  "version": "1.0.0",
+  "description": "API para integração com BDFD",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node api/exemplo.js"
+  },
+  "author": "Vitória",
+  "license": "MIT"
+}
