@@ -1,0 +1,42 @@
+import { createCanvas, loadImage } from "@napi-rs/canvas";
+import { join } from "path";
+import fs from "fs";
+
+export const config = {
+  runtime: "edge",
+};
+
+export default async function handler(req) {
+  const canvas = createCanvas(800, 400);
+  const ctx = canvas.getContext("2d");
+
+  // Fundo fofo e floral
+  const bg = await loadImage("https://i.imgur.com/fQqjqAZ.jpeg"); // Exemplo de fundo fofo
+
+  ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+
+  // Avatar da Serena
+  const avatar = await loadImage("https://vittyh-apis.vercel.app/serena-avatar.png"); // você vai hospedar a imagem
+
+  // Avatar redondo
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(130, 130, 100, 0, Math.PI * 2, true);
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(avatar, 30, 30, 200, 200);
+  ctx.restore();
+
+  // Texto fofo
+  ctx.font = "bold 40px sans-serif";
+  ctx.fillStyle = "#ffffff";
+  ctx.shadowColor = "#ff69b4";
+  ctx.shadowBlur = 10;
+  ctx.fillText("Serena está online!", 270, 150);
+
+  return new Response(canvas.toBuffer("image/png"), {
+    headers: {
+      "Content-Type": "image/png",
+    },
+  });
+}
