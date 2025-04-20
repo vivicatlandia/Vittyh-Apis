@@ -11,12 +11,12 @@ export default async function handler(req) {
   const ctx = canvas.getContext("2d");
 
   // Fundo fofo e floral
-  const bg = await loadImage("https://i.imgur.com/fQqjqAZ.jpeg"); // Exemplo de fundo fofo
+  const bg = await loadImage("https://vittyh-apis.vercel.app/api/SerenaAwakeST.png"); // Exemplo de fundo fofo
 
   ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
 
   // Avatar da Serena
-  const avatar = await loadImage("https://vittyh-apis.vercel.app/SerenaAwakeST.png"); // você vai hospedar a imagem
+  const avatar = await loadImage("https://vittyh-apis.vercel.app/api/SerenaAwakeST.png"); // você vai hospedar a imagem
 
   // Avatar redondo
   ctx.save();
