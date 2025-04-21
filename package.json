@@ -4,6 +4,12 @@
   "description": "API para integração com BDFD",
   "main": "index.js",
   "type": "module",
+  {
+  "dependencies": {
+    "@napi-rs/canvas": "^0.1.45",
+    "node-fetch": "^3.3.2"
+  }
+},
   "scripts": {
     "start": "node api/exemplo.js"
   },
