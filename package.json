@@ -13,6 +13,6 @@
   "@napi-rs/canvas": "^0.1.43"
   },
   "engines": {
-    "node": "16.x"
+    "node": "18.x"
   }
 }
