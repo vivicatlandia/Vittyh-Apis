@@ -1,16 +1,14 @@
 {
   "name": "serena-api",
   "version": "1.0.0",
-  "description": "API para o bot Serena no Discord",
-  "main": "index.js",
+  "description": "API de imagem do perfil Serena",
+  "main": "api/card.js",
   "scripts": {
-    "dev": "vercel dev",
-    "start": "vercel dev"
+    "start": "node api/card.js"
   },
   "dependencies": {
-  "@vercel/node": "^2.0.0",
-  "discord.js": "^14.0.0",
-  "@napi-rs/canvas": "^0.1.43"
+    "@napi-rs/canvas": "^0.1.39",
+    "express": "^4.18.2"
   },
   "engines": {
     "node": "18.x"
