@@ -7,15 +7,15 @@ const receivedUsersPath = path.join(__dirname, '../data/receivedUsers.json');
 // Função para ler o arquivo de registro
 function readReceivedUsers() {
   try {
-    const data = fs.readFileSync(receivedUsersPath);
+    const data = fs.readFileSync(receivedUsersPath, 'utf8');
     return JSON.parse(data);
   } catch (err) {
     console.error('Erro ao ler o arquivo de usuários recebidos:', err);
-    return { users: [] }; // Retorna um array vazio caso haja erro
+    return { users: [] }; // Retorna um array vazio caso o arquivo esteja vazio ou com erro
   }
 }
 
-// Função para salvar o registro de usuários
+// Função para salvar o arquivo de registro
 function saveReceivedUsers(data) {
   try {
     fs.writeFileSync(receivedUsersPath, JSON.stringify(data, null, 2));
@@ -34,18 +34,17 @@ module.exports = async (req, res) => {
 
   // Carrega os usuários que já receberam o gift
   const receivedUsersData = readReceivedUsers();
-  const userHasReceived = receivedUsersData.users.includes(userId);
-
-  if (userHasReceived) {
-    // Se o usuário já recebeu, retorna uma mensagem de erro
+  
+  // Verifica se o usuário já recebeu
+  if (receivedUsersData.users.includes(userId)) {
     return res.status(400).json({ message: 'Você já recebeu seus 20k SNcoins!' });
   }
 
-  // Se o usuário ainda não recebeu, concede os 20k SNcoins
-  // Exemplo de como você poderia adicionar os 20k SNcoins (adicione a lógica conforme sua implementação)
-  // Adicione os 20k SNcoins ao usuário no banco de dados ou em outra estrutura de dados.
-
-  // Registrar o usuário como tendo recebido
+  // Adiciona os 20k SNcoins ao usuário (simulação de lógica)
+  // Aqui você pode adicionar a lógica de como adicionar SNcoins ao usuário, de acordo com sua implementação.
+  console.log(`Usuário ${userId} recebeu 20k SNcoins!`);
+  
+  // Registra o ID do usuário como recebido
   receivedUsersData.users.push(userId);
   saveReceivedUsers(receivedUsersData);
 
