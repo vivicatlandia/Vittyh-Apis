@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/perfil.js": {
+    "api/card.js": {
       "runtime": "@vercel/node"
     }
   }
