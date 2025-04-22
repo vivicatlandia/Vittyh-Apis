@@ -1,51 +1,30 @@
-import { createCanvas, loadImage } from '@napi-rs/canvas';
-import fetch from 'node-fetch';
-import path from 'path';
-import { readFile } from 'fs/promises';
+const { createCanvas, loadImage } = require('canvas');
 
 export default async function handler(req, res) {
-  const { username = 'Usuário', saldo = 0, reputacao = 0, casamento = 'Solteiro(a)', avatar } = req.query;
+  const nome = req.query.nome || "Usuário";
+  const saldo = req.query.saldo || 0;
+  const avatarUrl = req.query.avatar || "https://cdn.discordapp.com/emojis/1260120851790168166.png?size=2048";
 
-  // Carrega a imagem de fundo
-  const bgBuffer = await readFile(path.resolve('./assets/background.png'));
-  const bg = await loadImage(bgBuffer);
+  const canvas = createCanvas(600, 250);
+  const ctx = canvas.getContext("2d");
 
-  // Carrega o avatar do usuário
-  const avatarResponse = await fetch(avatar);
-  const avatarBuffer = await avatarResponse.arrayBuffer();
-  const avatarImage = await loadImage(Buffer.from(avatarBuffer));
+  ctx.fillStyle = "#ffcce6";
+  ctx.fillRect(0, 0, 600, 250);
 
-  const canvas = createCanvas(800, 400);
-  const ctx = canvas.getContext('2d');
-
-  // Desenha o fundo
-  ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
-
-  // Avatar (circular)
-  ctx.save();
+  const avatar = await loadImage(avatarUrl);
   ctx.beginPath();
-  ctx.arc(100, 100, 60, 0, Math.PI * 2);
+  ctx.arc(125, 125, 80, 0, Math.PI * 2);
   ctx.closePath();
   ctx.clip();
-  ctx.drawImage(avatarImage, 40, 40, 120, 120);
-  ctx.restore();
+  ctx.drawImage(avatar, 45, 45, 160, 160);
 
-  // Nome
-  ctx.font = '28px Sans';
-  ctx.fillStyle = '#fff';
-  ctx.fillText(username, 200, 80);
+  ctx.font = "28px sans-serif";
+  ctx.fillStyle = "#333";
+  ctx.fillText(nome, 250, 100);
 
-  // Saldo
-  ctx.font = '20px Sans';
-  ctx.fillStyle = '#ccc';
-  ctx.fillText(`Saldo: ${saldo} SNcoins`, 200, 120);
+  ctx.font = "22px sans-serif";
+  ctx.fillText(`Saldo: ${saldo} SNcoins`, 250, 140);
 
-  // Reputação
-  ctx.fillText(`Reputação: ${reputacao}`, 200, 160);
-
-  // Status de casamento
-  ctx.fillText(`Casamento: ${casamento}`, 200, 200);
-
-  res.setHeader('Content-Type', 'image/png');
-  res.send(canvas.toBuffer('image/png'));
+  res.setHeader("Content-Type", "image/png");
+  res.send(canvas.toBuffer());
 }
