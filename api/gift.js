@@ -1,18 +1,27 @@
 const fs = require('fs');
 const path = require('path');
 
+// Caminho para o arquivo onde os usuários que receberam serão armazenados
 const receivedUsersPath = path.join(__dirname, '../data/receivedUsers.json');
 
+// Função para ler os dados do arquivo recebido
 function readReceivedUsers() {
   try {
+    if (!fs.existsSync(receivedUsersPath)) {
+      // Se o arquivo não existir, cria um novo com um array vazio
+      fs.writeFileSync(receivedUsersPath, JSON.stringify({ users: [] }, null, 2));
+      return { users: [] };
+    }
+
     const data = fs.readFileSync(receivedUsersPath, 'utf8');
     return JSON.parse(data);
   } catch (err) {
     console.error('Erro ao ler o arquivo:', err);
-    return { users: [] };  // Se o arquivo estiver vazio ou não existir, retorna um array vazio
+    return { users: [] };  // Retorna um array vazio em caso de erro
   }
 }
 
+// Função para salvar os dados atualizados no arquivo
 function saveReceivedUsers(data) {
   try {
     fs.writeFileSync(receivedUsersPath, JSON.stringify(data, null, 2));
