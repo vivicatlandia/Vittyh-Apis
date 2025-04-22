@@ -3,7 +3,7 @@ const { createCanvas, loadImage } = require('@napi-rs/canvas');
 
 const app = express();
 
-app.get('/perfil', async (req, res) => {
+app.get('/card', async (req, res) => {
   const nome = req.query.nome || 'Serena';
   const saldo = req.query.saldo || '1000';
   const canvas = createCanvas(600, 250);
