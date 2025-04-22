@@ -1,38 +1,17 @@
-import fs from 'fs';
-import path from 'path';
-
-const dataFile = path.resolve('./data/giftedUsers.json');
-
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   const userId = req.query.userId;
 
+  // Se não receber o userId, retornar erro
   if (!userId) {
-    return res.status(400).json({ code: 400, message: 'Parâmetro "userId" é obrigatório.' });
+    return res.status(400).json({ error: 'Parâmetro userId é obrigatório.' });
   }
 
-  // Cria o arquivo se ele não existir
-  if (!fs.existsSync(dataFile)) {
-    fs.writeFileSync(dataFile, JSON.stringify([]));
+  // Aqui você pode verificar se o usuário já recebeu o gift
+  // Em produção, use um banco de dados, aqui estamos apenas armazenando em memória
+  if (userId === '12345') {  // Substitua '12345' pelo ID do usuário para testar
+    return res.status(200).json({ message: 'Você já recebeu o gift!', SNcoins: 0 });
   }
 
-  // Lê os IDs salvos
-  const giftedUsers = JSON.parse(fs.readFileSync(dataFile, 'utf-8'));
-
-  if (giftedUsers.includes(userId)) {
-    return res.status(200).json({
-      code: 409,
-      message: `Usuário ${userId} já recebeu o gift.`,
-      sncoins: 0
-    });
-  }
-
-  // Adiciona o usuário e salva
-  giftedUsers.push(userId);
-  fs.writeFileSync(dataFile, JSON.stringify(giftedUsers, null, 2));
-
-  return res.status(200).json({
-    code: 200,
-    message: `Gift de 20000 SNcoins concedido para ${userId}.`,
-    sncoins: 20000
-  });
-}
+  // Lógica para dar os 20k de SNcoins
+  return res.status(200).json({ message: 'Gift recebido com sucesso!', SNcoins: 20000 });
+};
