@@ -1,52 +1,50 @@
-const express = require("express");
-const { Client, GatewayIntentBits, Partials } = require("discord.js");
-require("dotenv").config();
+const { Client } = require("discord.js"); // Usando a biblioteca discord.js
 
-const app = express();
-const port = 3000;
+module.exports = async (req, res) => {
+  try {
+    // Verifique se o parâmetro 'channelId' foi passado na query
+    const { channelId } = req.query;
+    
+    if (!channelId) {
+      return res.status(400).json({ error: "Falta o 'channelId' na query." });
+    }
 
-// Inicializa o bot Discord
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
-  ],
-  partials: [Partials.Channel, Partials.Message]
-});
+    // Crie um cliente do Discord para interagir com a API
+    const client = new Client({ intents: ['GUILDS', 'GUILD_MESSAGES'] });
 
-client.once("ready", () => {
-  console.log(`Bot logado como ${client.user.tag}`);
-});
+    // Logando no Discord com o token (substitua pelo seu token)
+    await client.login("MTA4Njk5MDUzNzAyODAyNjQ0MA.GfpcMs.FwkqbRfxWo5_XjwicxLaxOzkU6qDsbH6HnIxPE");
 
-// Rota para pegar somente o ID da primeira mensagem
-app.get("/primeira/:channelId", async (req, res) => {
-  const channelId = req.params.channelId;
-  const channel = await client.channels.fetch(channelId).catch(() => null);
-  if (!channel || !channel.isTextBased()) return res.status(404).send("Canal inválido");
+    // Esperando que o cliente se conecte antes de buscar a mensagem
+    client.once('ready', async () => {
+      try {
+        const channel = await client.channels.fetch(channelId); // Obtém o canal
 
-  let lastId;
-  let messages = [];
-  let done = false;
+        // Pega todas as mensagens do canal (limitado por 100 mensagens por vez)
+        const messages = await channel.messages.fetch({ limit: 100 }); // Ajuste o limite conforme necessário
 
-  while (!done) {
-    const options = { limit: 100 };
-    if (lastId) options.before = lastId;
+        // Filtra as mensagens enviadas pelo bot (você pode substituir pelo ID do seu bot)
+        const botMessages = messages.filter(msg => msg.author.id === client.user.id);
 
-    const fetched = await channel.messages.fetch(options);
-    messages = [...fetched.values(), ...messages];
-    if (fetched.size < 100) done = true;
-    else lastId = fetched.last().id;
+        // Se não houver mensagens do bot
+        if (botMessages.size === 0) {
+          return res.status(404).json({ error: "Nenhuma mensagem do bot encontrada no canal." });
+        }
+
+        // Pega o ID da primeira mensagem do bot
+        const firstBotMessage = botMessages.first();
+        const firstBotMessageId = firstBotMessage.id;
+
+        // Retorna o ID da primeira mensagem do bot
+        res.status(200).json({ firstBotMessageId });
+
+        client.destroy(); // Desconecta o cliente após concluir
+      } catch (error) {
+        res.status(500).json({ error: "Erro ao buscar mensagens: " + error.message });
+      }
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: "Erro no servidor: " + error.message });
   }
-
-  const first = messages[0];
-  if (!first) return res.status(404).send("Nenhuma mensagem encontrada");
-
-  res.send(first.id); // Só retorna o ID
-});
-
-client.login(process.env.TOKEN).then(() => {
-  app.listen(port, () => {
-    console.log(`API rodando em http://localhost:${port}`);
-  });
-});
+};
