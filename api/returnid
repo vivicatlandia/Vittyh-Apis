@@ -1,0 +1,52 @@
+const express = require("express");
+const { Client, GatewayIntentBits, Partials } = require("discord.js");
+require("dotenv").config();
+
+const app = express();
+const port = 3000;
+
+// Inicializa o bot Discord
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ],
+  partials: [Partials.Channel, Partials.Message]
+});
+
+client.once("ready", () => {
+  console.log(`Bot logado como ${client.user.tag}`);
+});
+
+// Rota para pegar somente o ID da primeira mensagem
+app.get("/primeira/:channelId", async (req, res) => {
+  const channelId = req.params.channelId;
+  const channel = await client.channels.fetch(channelId).catch(() => null);
+  if (!channel || !channel.isTextBased()) return res.status(404).send("Canal inválido");
+
+  let lastId;
+  let messages = [];
+  let done = false;
+
+  while (!done) {
+    const options = { limit: 100 };
+    if (lastId) options.before = lastId;
+
+    const fetched = await channel.messages.fetch(options);
+    messages = [...fetched.values(), ...messages];
+    if (fetched.size < 100) done = true;
+    else lastId = fetched.last().id;
+  }
+
+  const first = messages[0];
+  if (!first) return res.status(404).send("Nenhuma mensagem encontrada");
+
+  res.send(first.id); // Só retorna o ID
+});
+
+client.login(process.env.TOKEN).then(() => {
+  app.listen(port, () => {
+    console.log(`API rodando em http://localhost:${port}`);
+  });
+});
