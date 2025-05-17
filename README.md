@@ -26,4 +26,11 @@ const stack = {
 
 function criatividade() {
   return "Miau! Código com amor e estilo felino 🐱‍👓";
-}```
+}
+```
+
+# 📝 • Contato:
+Se quiser conversar, colaborar ou só dar um oi:  
+[![Discord](https://img.shields.io/badge/Discord-vitoria_sophia-7289DA?logo=discord&logoColor=white&style=for-the-badge)](https://discord.com/users/999208637509668954)
+[![GitHub](https://img.shields.io/badge/GitHub-VittyhSoffy-000000?style=for-the-badge&logo=github&logoColor=purple)](https://github.com/vivicatlandia)
+
