@@ -26,4 +26,4 @@ const stack = {
 
 function criatividade() {
   return "Miau! Código com amor e estilo felino 🐱‍👓";
-}
+}```
